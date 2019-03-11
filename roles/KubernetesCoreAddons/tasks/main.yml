@@ -1,0 +1,61 @@
+- file:
+    path: /etc/kubernetes/CoreAddons
+    state: directory
+  tags:
+    - kube-proxy
+    - core
+
+- include: kube-proxy.yml
+  when: kube_proxy_bin
+  tags:
+    - kube-proxy
+    - core
+
+- name: 部署kube-proxy
+  template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - kube-proxy.yml.j2
+  when: not kube_proxy_bin
+  tags:
+    - kube-proxy
+    - core
+
+- command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-proxy.yml
+  when: not kube_proxy_bin
+  tags:
+    - kube-proxy
+    - core
+  delegate_to: "{{ groups['master'][0] }}"
+
+- name: 渲染kube-flannel.yml文件模板
+  template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - 'kube-flannel.yml.j2'
+  when: Net_Choose is defined and Net_Choose == 'flannel'
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+
+- name: 部署flannel
+  command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-flannel.yml
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+
+- name: 渲染coredns,metrics-server文件模板
+  template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - 'coredns.yml.j2'
+    - 'metrics-server.yml.j2'
+  tags:
+    - core
+  delegate_to: "{{ groups['master'][0] }}"
+
+- name: 部署coredns,metrics-server
+  command: kubectl apply -f /etc/kubernetes/CoreAddons/{{ item }}
+  with_items:
+    - 'coredns.yml'
+    - 'metrics-server.yml'
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  tags:
+    - core
+

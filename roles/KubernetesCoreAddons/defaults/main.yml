@@ -1,0 +1,9 @@
+metrics_version: 'v0.3.1'
+kube_proxy_bin: true
+
+
+Net_Choose: flannel
+
+flannel_img: v0.11.0-amd64
+flannel_type: vxlan
+

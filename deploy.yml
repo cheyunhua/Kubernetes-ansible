@@ -1,0 +1,51 @@
+---
+- hosts: all
+  roles:
+    - docker
+  tags:
+    - docker
+
+# down_file
+
+- hosts: all
+  roles:
+    - tls
+  tags:
+    - tls
+
+
+- hosts: etcd
+  roles:
+    - etcd
+  tags:
+    - etcd
+
+- hosts: master
+  roles:
+    - HA
+  tags:
+    - HA
+
+- hosts: master
+  roles:
+    - master
+  tags:
+    - master
+
+- hosts: Allnode
+  roles:
+    - bootstrap
+  tags:
+    - bootstrap
+
+- hosts: Allnode
+  roles:
+    - node
+  tags:
+    - node
+
+- hosts: Allnode
+  roles:
+    - KubernetesCoreAddons
+  tags:
+    - addon

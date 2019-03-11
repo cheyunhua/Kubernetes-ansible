@@ -1,0 +1,35 @@
+- name: 部署Kube-proxy
+  copy: 
+    src: /usr/local/bin/kube-proxy 
+    dest: /usr/local/bin/kube-proxy
+    mode: u+x
+
+#- file: path=~/.kube state=directory
+#  connection: local
+#  run_once: true
+
+#- copy:
+#    src: ~/.kube/config
+#    dest: ~/.kube/config
+#  connection: local
+#  run_once: true
+  
+- name: 生成kube-proxy的kubeconfig并配置
+  script: files/kubeconfig.sh {{ KUBE_APISERVER }}
+  args:
+    executable: bash
+  connection: local
+#  run_once: true
+
+- name: 分发kube-proxy.kubeconfig
+  copy:
+    src: /etc/kubernetes/kube-proxy.kubeconfig
+    dest: /etc/kubernetes/kube-proxy.kubeconfig
+
+
+- template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+  with_items:
+    - { src: 'kube-proxy.service.j2', dest: '/usr/lib/systemd/system/' }
+    - { src: 'kube-proxy.conf.j2', dest: '/etc/kubernetes/' }
+- name: 开机并启动kube-proxy
+  systemd: name=kube-proxy state=started enabled=yes daemon_reload=yes

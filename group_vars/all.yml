@@ -1,0 +1,21 @@
+# PASSWD: zhangguanzhang
+ansible_ssh_port: 22
+ansible_ssh_pass: zhangguanzhang
+
+docker_version: '18.06'
+ntp_domain1: 'cn.pool.ntp.org'
+ntp_domain2: 's1b.time.edu.cn'
+TimeZone: 'Asia/Shanghai'
+kernel: true
+
+VIP: '172.16.1.240'
+VIP_NETMASK: 24
+INTERFACE_NAME: eth0
+
+
+KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
+
+CLUSTER_NAME: 'kubernetes'
+KUBE_VERSION: 'v1.13.4'
+ETCD_version: 'v3.3.12'
+infra_image: 'registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1'
