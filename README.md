@@ -23,7 +23,7 @@
 
 **因为kubeadm扣的步骤,路径九成九一致,剧本里路径不给自定义**
 
-**HA是基于VIP,无法用于云上(测试过青云默认解除ip和mac绑定可以飘VIP,阿里不行),阿里四层SLB也有问题**
+**HA是基于VIP,无法用于云上(测试过青云默认解除ip和mac绑定可以飘VIP,阿里不行,存在ip和mac绑定,所以flannel的host-gw应该也用不了),阿里四层SLB也有问题**
 
 安装过程是参考的[Kubernetes v1.13.4 HA全手动苦工安装教学](https://zhangguanzhang.github.io/2019/03/03/kubernetes-1-13-4)
 
@@ -87,7 +87,7 @@ cd Kubernetes-ansible
  * master: 管理组件,检测apiserver端口那个`curl -sk https://master[0]:6443/healthz`的uri模块写法不知道是不是没调对经常报错,报错的话在执行完运行下`kubectl get cs`有输出就不用管
  * bootstrap: 给kubelet注册用
  * node: kubelet
- * addon: kube-proxy,flannel,coredns.metrics-server，flannel镜像拉取慢,推荐运行前使用命令拉取`ansible Allnode -m shell -a 'curl -s https://zhangguanzhang.github.io/bash/pull.sh | bash -s -- quay.io/coreos/flannel:v0.11.0-amd64'`
+ * addon: kube-proxy,flannel,coredns.metrics-server，flannel镜像拉取慢,推荐运行前使用命令拉取`ansible Allnode -m shell -a 'curl -s https://zhangguanzhang.github.io/bash/pull.sh | bash -s -- quay.io/coreos/flannel:v0.11.0-amd64'`, flannel使用host-gw的话配置`roles/KubernetesCoreAddons/defaults/main.yml`即可
 
 运行方式为下面,xxx为上面标签
 ansible-playbook deploy.yml --tags xxx  

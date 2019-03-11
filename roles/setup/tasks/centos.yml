@@ -1,4 +1,4 @@
-- name: 关闭{{ item }} - CentOS
+- name: 关闭firewalld NetworkManager dnsmasq - CentOS
   systemd: 
     name: "{{ item }}"
     enabled: no

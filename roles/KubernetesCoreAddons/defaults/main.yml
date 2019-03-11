@@ -5,5 +5,7 @@ kube_proxy_bin: true
 Net_Choose: flannel
 
 flannel_img: v0.11.0-amd64
+# or set the value to 'host-gw'
 flannel_type: vxlan
+
 
