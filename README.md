@@ -84,7 +84,7 @@ cd Kubernetes-ansible
  * tls: 生成证书和管理组件的kubeconfig,kubeconfig生成依赖kubectl命令,此步确保已经下载有.运行命令为`ansible-playbook deploy.yml --tags tls`,下面的也是tag改tags后面标签为下面的即可
  * etcd: 部署etcd
  * HA: keepalived+haproxy
- * master: 管理组件
+ * master: 管理组件,检测apiserver端口那个`curl -sk https://master[0]:6443/healthz`的uri模块写法不知道是不是没调对经常报错,报错的话在执行完运行下`kubectl get cs`有输出就不用管
  * bootstrap: 给kubelet注册用
  * node: kubelet
  * addon: kube-proxy,flannel,coredns.metrics-server，flannel镜像拉取慢,推荐运行前使用命令拉取`ansible Allnode -m shell -a 'curl -s https://zhangguanzhang.github.io/bash/pull.sh | bash -s -- quay.io/coreos/flannel:v0.11.0-amd64'`
@@ -105,9 +105,9 @@ etcd-0               Healthy   {"health": "true"}
 运行完node后`kubectl get node -o wide`查看注册上来否
 运行完addon后查看node状态是否为ready,以及kube-system命名空间下pod是否运行,
 
-![k8s](https://github.com/zhangguanzhang/Image-Hosting/blob/master/k8s/kube-ansible.png)
+![k8s](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible.png)
 
-**5 后续添加Node节点(未完成)**
+**4 后续添加Node节点(未完成)**
  1. 在当前的ansible目录改hosts,添加[newNode]分组写上成员
  2. 后执行以下命令添加node
  3. 然后查看是否添加上
