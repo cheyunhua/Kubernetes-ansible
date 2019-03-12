@@ -37,6 +37,7 @@
       - ipvsadm
       - conntrack
       - libseccomp
+      - net-tools
       - sysstat
       - ntp
       - wget
