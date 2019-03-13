@@ -43,6 +43,7 @@
       - wget
       - psmisc
     state: latest
+    update_cache: yes
 
 - name: 临时关闭 selinux
   shell: "setenforce 0"

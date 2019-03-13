@@ -1,26 +1,30 @@
-- name: 安装ntp
-  yum: 
-    name: 
-      - ntp
-    state: latest
-  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+- block:
+    - name: 设置hostname
+      hostname: name={{ hostname }}
 
-- name: 安装ntp
-  package: name=ntp  state=latest
-  when: ansible_distribution == "Ubuntu"
+    - name: 安装ntp
+      yum: 
+        name: 
+          - ntp
+        state: latest
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+    
+    - name: 安装ntp
+      package: name=ntp  state=latest
+      when: ansible_distribution == "Ubuntu"
+    
+    
+    - name: 分发ntp配置文件
+      template:
+        src: ntp.conf.j2
+        dest: /etc/ntp.conf
+    
+    - name: enable --now ntp
+      systemd:
+        name: ntpd
+        state: restarted
+        enabled: yes
 
-
-- name: 分发ntp配置文件
-  template:
-    src: ntp.conf.j2
-    dest: /etc/ntp.conf
-
-- name: enable --now ntp
-  systemd:
-    name: ntpd
-    state: restarted
-    enabled: yes
+  when: groups['etcd'] | intersect(groups['master']) | length == 0
 
 - include_tasks: etcd.yml
-  when: inventory_hostname in groups['etcd']
-

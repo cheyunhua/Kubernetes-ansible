@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: Allnode
   roles:
     - docker
   tags:
@@ -7,7 +7,7 @@
 
 # down_file
 
-- hosts: all
+- hosts: localhost
   roles:
     - tls
   tags:
