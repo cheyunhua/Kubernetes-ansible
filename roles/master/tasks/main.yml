@@ -27,8 +27,8 @@
   run_once: true
   delegate_to: "{{ groups['master'][0] }}"
 
-- name: 修改kubernetes ep
-  shell: |
-    kubectl patch ep kubernetes -p '{"subsets": [{"addresses":[{"ip":"{{ VIP }}"}],"ports":[{"name":"https","port":8443,"protocol":"TCP"}]}]}'
-  when: groups['master'] | length  != 1
-  connection: local
+#- name: 修改kubernetes ep
+#  shell: |
+#    kubectl patch ep kubernetes -p '{"subsets": [{"addresses":[{"ip":"{{ VIP }}"}],"ports":[{"name":"https","port":8443,"protocol":"TCP"}]}]}'
+#  when: groups['master'] | length  != 1
+#  connection: local
