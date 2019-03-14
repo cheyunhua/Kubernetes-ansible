@@ -20,7 +20,7 @@ vrrp_instance haproxy-vip {
     }
 
     virtual_ipaddress {
-        {{ VIP }}
+        {{ VIP }}/{{ VIP_NETMASK }}
     }
 
     track_script {
